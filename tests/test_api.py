@@ -38,6 +38,19 @@ def test_triage_with_wrong_key_returns_401(client: TestClient) -> None:
     assert response.status_code == 401
 
 
+def test_triage_with_wrong_scheme_returns_401(client: TestClient) -> None:
+    """A correct key sent with a scheme other than Bearer returns 401."""
+    response = client.post("/triage", json=VALID_TICKET, headers={"Authorization": f"Basic {TEST_KEY}"})
+    assert response.status_code == 401
+
+
+def test_docs_declare_bearer_auth(client: TestClient) -> None:
+    """The OpenAPI schema declares Bearer auth, which adds the Authorize button in /docs."""
+    schema = client.get("/openapi.json").json()
+    schemes = schema.get("components", {}).get("securitySchemes", {})
+    assert {"type": "http", "scheme": "bearer"} in schemes.values()
+
+
 def test_triage_empty_subject_returns_422(client: TestClient) -> None:
     """An empty subject fails validation with 422."""
     ticket = {"subject": "", "body": "Some text."}
