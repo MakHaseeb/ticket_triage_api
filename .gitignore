@@ -1,0 +1,9 @@
+# Secrets: never commit real keys
+.env
+
+# Local virtual environment created by uv
+.venv/
+
+# Files Python and pytest generate automatically
+__pycache__/
+.pytest_cache/
